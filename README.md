@@ -1,81 +1,129 @@
-# Cursed OpenCode Token Trace
+# cursed-opencode-tokentrace
 
-An OpenCode plugin for tracing token and context usage, attributing sources, and generating durable reports.
+OpenCode plugin core for tracing token usage, attributing likely sources, and exporting durable reports.
 
-## Project Purpose
+The design is intentionally conservative: if source identity is not clear, attribution is recorded as
+`unknown` instead of guessing.
 
-The primary goal of this project is to provide a robust mechanism for tracking and attributing token and context usage within the OpenCode environment. This is crucial for understanding resource consumption, optimizing prompts, and ensuring proper attribution of generated content.
+## What you get
 
-## Features
+- Token extraction across heterogeneous payload fields (`input_tokens`, `prompt_tokens`, etc.)
+- Source attribution with confidence + evidence (`direct` or `inferred`)
+- Session aggregation across tool/command/message/session events
+- File export with JSON (required) and Markdown (optional)
+- Deterministic unit tests for core logic and plugin adapter behavior
 
-- **Token Usage Tracing**: Monitor and log token consumption across various OpenCode operations.
-- **Context Attribution**: Link token usage back to its original source or context (e.g., specific files, user prompts, tool outputs).
-- **Durable Reports**: Generate persistent reports in JSON (mandatory) and Markdown (optional) formats, detailing token usage and attribution.
-- **Conservative Attribution Policy**: Prioritize accuracy; unresolved sources are marked as `unknown`.
-
-## Architecture
-
-The project is designed with a pure core logic, complemented by a thin OpenCode adapter. This separation ensures that the core tracing and attribution mechanisms are highly testable and independent of the OpenCode runtime.
-
-- `src/core/`: Contains the fundamental logic for the trace engine, token normalization, and aggregation.
-- `src/attribution/`: Handles source detection, confidence scoring, and evidence extraction.
-- `src/export/`: Manages JSON/Markdown report serialization and file writing.
-- `src/plugin/`: Provides the OpenCode hook wiring and runtime session management.
-
-## Development
-
-### Prerequisites
-
-- [Bun](https://bun.sh/) (preferred package manager and runtime)
-- Node.js (LTS compatible)
-- TypeScript (strict mode)
-
-### Installation
+## Install
 
 ```bash
 bun install
 ```
 
-### Build
-
-```bash
-bun run build
-```
-
-### Lint
+## Run locally
 
 ```bash
 bun run lint
-```
-
-### Type Check
-
-```bash
 bun run typecheck
+bun test
+bun run build
 ```
 
-### Test
+Run a single test file:
 
 ```bash
-bun test
+bun test test/trace-engine.test.ts
 ```
 
-### Docker test workflow
+Run a single test name:
+
+```bash
+bun test --test-name-pattern "unknown"
+```
+
+## Docker workflow
+
+Run tests in Docker:
 
 ```bash
 bun run test:docker
 ```
 
-Run full lint/typecheck/test/build in Docker:
+Run full Docker verification (lint + typecheck + test + build):
 
 ```bash
 bun run verify:docker
 ```
 
-## Contributing
+## Quick usage example
 
-Contributions are welcome! Please refer to `AGENTS.md` for detailed guidelines on code style, commit conventions, and testing.
+```ts
+import { createTokenTracePlugin } from "cursed-opencode-tokentrace";
+
+const plugin = createTokenTracePlugin({
+  autoExportOnIdle: true,
+  includeMarkdown: true,
+  outputDir: ".opencode/reports",
+});
+
+await plugin.hooks["tool.execute.after"]({
+  sessionId: "session-42",
+  tool: { type: "mcp", name: "context7.search" },
+  mcpServer: "context7",
+  usage: { input_tokens: 120, output_tokens: 45 },
+});
+
+await plugin.hooks["session.idle"]({ sessionId: "session-42" });
+```
+
+## Example report output
+
+Sample JSON report (`docs/examples/sample-session-report.json`):
+
+```json
+{
+  "sessionId": "session-42",
+  "totals": {
+    "totalTokens": 377,
+    "eventCount": 6
+  },
+  "sources": [
+    { "key": "skill:issue-map", "kind": "skill", "confidence": "direct" },
+    { "key": "mcp_tool:context7", "kind": "mcp_tool", "confidence": "direct" },
+    { "key": "unknown:unknown", "kind": "unknown", "confidence": "inferred" }
+  ]
+}
+```
+
+Sample Markdown report (`docs/examples/sample-session-report.md`) is included for human review.
+
+## Terminal / ASCII captures
+
+- Full verification snapshot: `docs/verification-2026-03-03.md`
+- Raw terminal capture: `docs/examples/terminal-verify.txt`
+
+Excerpt:
+
+```text
+14 pass
+0 fail
+37 expect() calls
+Ran 14 tests across 5 files.
+```
+
+## Project layout
+
+- `src/core/` - token extraction and session aggregation
+- `src/attribution/` - source classification + evidence
+- `src/export/` - JSON/Markdown serializers and file writes
+- `src/plugin/` - OpenCode hook adapter
+- `test/` - deterministic unit tests
+
+## Notes
+
+- Default report directory: `.opencode/reports`
+- Report filenames include `sessionId` + timestamp
+- Unknown attribution is always preserved for safe accounting
 
 ## License
 
-This project is licensed under the MIT License.
+MIT

@@ -1,0 +1,36 @@
+$ bun run verify:docker
+$ docker compose run --rm verify
+$ eslint .
+$ tsc -p tsconfig.json --noEmit
+bun test v1.3.10 (30e609e0)
+
+test/report-exporter.test.ts:
+(pass) exportSessionReport > writes JSON and markdown files
+(pass) exportSessionReport > creates the output directory when it does not exist
+
+test/source-attribution.test.ts:
+(pass) attributeSource > detects direct skill attribution
+(pass) attributeSource > detects direct mcp tool attribution
+(pass) attributeSource > infers command source from event name
+(pass) attributeSource > falls back to unknown when no evidence is available
+
+test/token-usage.test.ts:
+(pass) extractTokenUsage > extracts snake_case usage fields
+(pass) extractTokenUsage > extracts mixed naming conventions and computes total when missing
+(pass) extractTokenUsage > returns zero usage when payload does not contain token fields
+(pass) extractTokenUsage > clamps non-finite and negative numbers
+
+test/tokentrace-plugin.test.ts:
+(pass) createTokenTracePlugin > auto-exports report on session idle
+(pass) createTokenTracePlugin > supports manual export and report lookup
+
+test/trace-engine.test.ts:
+(pass) TraceEngine > aggregates usage by session and source
+(pass) TraceEngine > tracks unknown attribution safely
+
+ 14 pass
+ 0 fail
+ 37 expect() calls
+Ran 14 tests across 5 files.
+
+$ tsc -p tsconfig.json

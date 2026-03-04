@@ -1,0 +1,69 @@
+{
+  "sessionId": "session-42",
+  "startedAt": "2026-03-03T20:00:00.000Z",
+  "updatedAt": "2026-03-03T20:00:06.000Z",
+  "exportedAt": "2026-03-03T20:00:10.000Z",
+  "totals": {
+    "inputTokens": 231,
+    "outputTokens": 98,
+    "cacheReadTokens": 40,
+    "cacheWriteTokens": 8,
+    "totalTokens": 377,
+    "eventCount": 6
+  },
+  "sources": [
+    {
+      "key": "skill:issue-map",
+      "kind": "skill",
+      "confidence": "direct",
+      "events": 2,
+      "totals": {
+        "inputTokens": 120,
+        "outputTokens": 45,
+        "cacheReadTokens": 20,
+        "cacheWriteTokens": 4,
+        "totalTokens": 189
+      },
+      "evidence": [
+        "direct:skill:skill.id"
+      ]
+    },
+    {
+      "key": "mcp_tool:context7",
+      "kind": "mcp_tool",
+      "confidence": "direct",
+      "events": 2,
+      "totals": {
+        "inputTokens": 70,
+        "outputTokens": 35,
+        "cacheReadTokens": 20,
+        "cacheWriteTokens": 4,
+        "totalTokens": 129
+      },
+      "evidence": [
+        "direct:mcp:mcpServer",
+        "tool:context7.search"
+      ]
+    },
+    {
+      "key": "unknown:unknown",
+      "kind": "unknown",
+      "confidence": "inferred",
+      "events": 2,
+      "totals": {
+        "inputTokens": 41,
+        "outputTokens": 18,
+        "cacheReadTokens": 0,
+        "cacheWriteTokens": 0,
+        "totalTokens": 59
+      },
+      "evidence": [
+        "unknown:event:custom.random.event",
+        "unknown:insufficient-source-evidence"
+      ]
+    }
+  ],
+  "notes": [
+    "unknown attribution retained for conservative accounting"
+  ]
+}
