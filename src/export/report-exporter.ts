@@ -2,17 +2,24 @@ import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import type { SessionReport } from "../core/types";
+import { renderAnsiReport } from "./ansi-renderer";
+import { renderHtmlReport } from "./html-renderer";
 
 export const DEFAULT_REPORT_DIRECTORY = ".opencode/reports";
 
 export interface ExportSessionReportOptions {
   outputDir?: string;
+  includeAnsi?: boolean;
+  ansiColor?: boolean;
+  includeHtml?: boolean;
   includeMarkdown?: boolean;
   exportedAt?: string;
 }
 
 export interface ExportResult {
   jsonPath: string;
+  ansiPath?: string;
+  htmlPath?: string;
   markdownPath?: string;
 }
 
@@ -93,6 +100,9 @@ export async function exportSessionReport(
   options: ExportSessionReportOptions = {},
 ): Promise<ExportResult> {
   const outputDir = options.outputDir ?? DEFAULT_REPORT_DIRECTORY;
+  const includeAnsi = options.includeAnsi ?? true;
+  const ansiColor = options.ansiColor ?? false;
+  const includeHtml = options.includeHtml ?? false;
   const includeMarkdown = options.includeMarkdown ?? false;
   const exportedAt = options.exportedAt ?? report.exportedAt ?? new Date().toISOString();
   const reportToWrite: SessionReport = {
@@ -113,17 +123,32 @@ export async function exportSessionReport(
   const jsonBody = JSON.stringify(reportToWrite, null, 2);
   await writeReportFile(jsonPath, jsonBody);
 
-  if (!includeMarkdown) {
-    return {
-      jsonPath,
-    };
+  const result: ExportResult = {
+    jsonPath,
+  };
+
+  if (includeAnsi) {
+    const ansiPath = path.join(outputDir, `${baseName}.ansi.txt`);
+    await writeReportFile(
+      ansiPath,
+      renderAnsiReport(reportToWrite, {
+        colorEnabled: ansiColor,
+      }),
+    );
+    result.ansiPath = ansiPath;
   }
 
-  const markdownPath = path.join(outputDir, `${baseName}.md`);
-  await writeReportFile(markdownPath, renderMarkdownReport(reportToWrite));
+  if (includeHtml) {
+    const htmlPath = path.join(outputDir, `${baseName}.html`);
+    await writeReportFile(htmlPath, renderHtmlReport(reportToWrite));
+    result.htmlPath = htmlPath;
+  }
 
-  return {
-    jsonPath,
-    markdownPath,
-  };
+  if (includeMarkdown) {
+    const markdownPath = path.join(outputDir, `${baseName}.md`);
+    await writeReportFile(markdownPath, renderMarkdownReport(reportToWrite));
+    result.markdownPath = markdownPath;
+  }
+
+  return result;
 }

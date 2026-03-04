@@ -41,23 +41,30 @@ function buildBaseReport(): SessionReport {
 }
 
 describe("exportSessionReport", () => {
-  test("writes JSON and markdown files", async () => {
+  test("writes JSON, ANSI, HTML, and markdown files", async () => {
     const tempDir = await mkdtemp(path.join(os.tmpdir(), "tokentrace-export-"));
 
     try {
       const result = await exportSessionReport(buildBaseReport(), {
         outputDir: tempDir,
+        includeHtml: true,
         includeMarkdown: true,
         exportedAt: "2026-01-01T00:02:00.000Z",
       });
 
       const jsonBody = await readFile(result.jsonPath, "utf8");
+      const ansiBody = await readFile(result.ansiPath as string, "utf8");
+      const htmlBody = await readFile(result.htmlPath as string, "utf8");
       const markdownBody = await readFile(result.markdownPath as string, "utf8");
       const parsed = JSON.parse(jsonBody) as SessionReport;
 
       expect(result.jsonPath.endsWith(".json")).toBe(true);
+      expect(result.ansiPath?.endsWith(".ansi.txt")).toBe(true);
+      expect(result.htmlPath?.endsWith(".html")).toBe(true);
       expect(result.markdownPath?.endsWith(".md")).toBe(true);
       expect(parsed.exportedAt).toBe("2026-01-01T00:02:00.000Z");
+      expect(ansiBody.includes("Token Trace Report")).toBe(true);
+      expect(htmlBody.includes("<!DOCTYPE html>")).toBe(true);
       expect(markdownBody.includes("| Kind | Key | Confidence |")).toBe(true);
     } finally {
       await rm(tempDir, {
@@ -80,6 +87,9 @@ describe("exportSessionReport", () => {
       const parsed = JSON.parse(jsonBody) as SessionReport;
 
       expect(parsed.sessionId).toBe("session-1");
+      expect(result.ansiPath?.endsWith(".ansi.txt")).toBe(true);
+      expect(result.markdownPath).toBeUndefined();
+      expect(result.htmlPath).toBeUndefined();
     } finally {
       await rm(rootDir, {
         recursive: true,

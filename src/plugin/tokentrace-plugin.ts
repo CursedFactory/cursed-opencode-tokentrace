@@ -7,6 +7,9 @@ import type { ExportResult } from "../export/report-exporter";
 
 export interface TokenTracePluginOptions {
   outputDir?: string;
+  includeAnsi?: boolean;
+  ansiColor?: boolean;
+  includeHtml?: boolean;
   includeMarkdown?: boolean;
   autoExportOnIdle?: boolean;
   now?: () => Date;
@@ -117,6 +120,18 @@ export function createTokenTracePlugin(options: TokenTracePluginOptions = {}): T
 
     if (options.includeMarkdown !== undefined) {
       exportOptions.includeMarkdown = options.includeMarkdown;
+    }
+
+    if (options.includeAnsi !== undefined) {
+      exportOptions.includeAnsi = options.includeAnsi;
+    }
+
+    if (options.ansiColor !== undefined) {
+      exportOptions.ansiColor = options.ansiColor;
+    }
+
+    if (options.includeHtml !== undefined) {
+      exportOptions.includeHtml = options.includeHtml;
     }
 
     return exportSessionReport(report, exportOptions);

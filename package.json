@@ -12,8 +12,8 @@
     "test": "bun test",
     "test:watch": "bun test --watch",
     "test:coverage": "bun test --coverage",
-    "test:docker": "docker compose run --rm tests",
-    "verify:docker": "docker compose run --rm verify"
+    "test:docker": "docker compose run --rm --build tests",
+    "verify:docker": "docker compose run --rm --build verify"
   },
   "keywords": [],
   "author": "Gitter (google/gemini-2.5-flash)",

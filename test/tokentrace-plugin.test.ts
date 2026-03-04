@@ -49,9 +49,11 @@ describe("createTokenTracePlugin", () => {
       });
 
       const files = await readdir(tempDir);
-      expect(files.length).toBe(1);
+      expect(files.length).toBe(2);
+      const jsonFile = files.find((fileName) => fileName.endsWith(".json"));
+      expect(jsonFile).toBeDefined();
 
-      const reportPath = path.join(tempDir, files[0] as string);
+      const reportPath = path.join(tempDir, jsonFile as string);
       const reportBody = await readFile(reportPath, "utf8");
       const report = JSON.parse(reportBody) as { sessionId: string; totals: { totalTokens: number } };
 
@@ -92,6 +94,7 @@ describe("createTokenTracePlugin", () => {
 
       const exportResult = await plugin.exportSession("session-manual");
       expect(exportResult?.jsonPath.endsWith(".json")).toBe(true);
+      expect(exportResult?.ansiPath?.endsWith(".ansi.txt")).toBe(true);
 
       const unknownExport = await plugin.exportSession("missing-session");
       expect(unknownExport).toBeNull();
