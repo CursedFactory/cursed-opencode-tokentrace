@@ -1,16 +1,10 @@
-
-FROM oven/bun:1.1.18-ubuntu
+FROM oven/bun:1.3.10
 
 WORKDIR /app
 
-COPY package.json bun.lockb tsconfig.json ./
-RUN bun install
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
 
 COPY . .
 
-RUN bun run build
-
-EXPOSE 3000
-
-CMD ["bun", "run", "start"]
-
+CMD ["bun", "test"]

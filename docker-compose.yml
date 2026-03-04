@@ -1,13 +1,12 @@
-
-version: "3.8"
-
 services:
-  app:
-    build: .
-    ports:
-      - "3000:3000"
-    volumes:
-      - .:/app
-    environment:
-      NODE_ENV: development
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: bun test
 
+  verify:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -lc "bun run lint && bun run typecheck && bun test && bun run build"

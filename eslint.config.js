@@ -1,21 +1,35 @@
-module.exports = {
-  root: true,
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-  extends: [
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
-  ],
-  env: {
-    node: true,
-    es2022: true
+import tsEslintPlugin from "@typescript-eslint/eslint-plugin";
+import tsEslintParser from "@typescript-eslint/parser";
+
+export default [
+  {
+    ignores: ["dist/**", "node_modules/**"],
   },
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module'
+  {
+    files: ["**/*.ts"],
+    languageOptions: {
+      parser: tsEslintParser,
+      ecmaVersion: "latest",
+      sourceType: "module",
+    },
+    plugins: {
+      "@typescript-eslint": tsEslintPlugin,
+    },
+    rules: {
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/consistent-type-imports": [
+        "error",
+        {
+          prefer: "type-imports",
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "error",
+    },
   },
-  rules: {
-    // Add custom rules here
-  }
-};
+];
