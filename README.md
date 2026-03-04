@@ -1,5 +1,9 @@
 # cursed-opencode-tokentrace
 
+[![Build](https://github.com/CursedFactory/cursed-opencode-tokentrace/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/CursedFactory/cursed-opencode-tokentrace/actions/workflows/build.yml)
+[![Test](https://github.com/CursedFactory/cursed-opencode-tokentrace/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/CursedFactory/cursed-opencode-tokentrace/actions/workflows/test.yml)
+[![Docker](https://github.com/CursedFactory/cursed-opencode-tokentrace/actions/workflows/docker.yml/badge.svg?branch=master)](https://github.com/CursedFactory/cursed-opencode-tokentrace/actions/workflows/docker.yml)
+
 OpenCode plugin core for tracing token usage, attributing likely sources, and exporting durable reports.
 
 The design is intentionally conservative: if source identity is not clear, attribution is recorded as
@@ -53,6 +57,11 @@ Run full Docker verification (lint + typecheck + test + build):
 ```bash
 bun run verify:docker
 ```
+
+## Agent install prompt
+
+Use `docs/INSTALL_PROMPT.md` when you want another coding agent to install, configure, and
+smoke-test this plugin with minimal back-and-forth.
 
 ## Quick usage example
 
