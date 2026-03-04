@@ -37,7 +37,8 @@ OpenCode configuration guidance:
 
 Smoke test requirements:
 - Trigger at least one tool/command event and one session.idle event.
-- Confirm a JSON report is created under `.opencode/reports` (or configured output dir).
+- Confirm a JSON report and ANSI report are created under `.opencode/reports` (or configured output dir).
+- If HTML mode is enabled, confirm the `.html` report also exists.
 - Print the report file path and top-level totals/source keys.
 
 Success criteria:

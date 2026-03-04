@@ -14,7 +14,7 @@ The design is intentionally conservative: if source identity is not clear, attri
 - Token extraction across heterogeneous payload fields (`input_tokens`, `prompt_tokens`, etc.)
 - Source attribution with confidence + evidence (`direct` or `inferred`)
 - Session aggregation across tool/command/message/session events
-- File export with JSON (required) and Markdown (optional)
+- File export with JSON (required), ANSI/TUI report (default), and optional HTML/Markdown
 - Deterministic unit tests for core logic and plugin adapter behavior
 
 ## Install
@@ -69,6 +69,9 @@ smoke-test this plugin with minimal back-and-forth.
 import { createTokenTracePlugin } from "cursed-opencode-tokentrace";
 
 const plugin = createTokenTracePlugin({
+  includeAnsi: true,
+  ansiColor: false,
+  includeHtml: true,
   autoExportOnIdle: true,
   includeMarkdown: true,
   outputDir: ".opencode/reports",
@@ -105,6 +108,11 @@ Sample JSON report (`docs/examples/sample-session-report.json`):
 
 Sample Markdown report (`docs/examples/sample-session-report.md`) is included for human review.
 
+Sample ANSI/TUI report (`docs/examples/sample-session-report.ansi.txt`) is included for terminal-friendly
+inspection.
+
+Sample HTML report (`docs/examples/sample-session-report.html`) shows the richer graphical format.
+
 ## Terminal / ASCII captures
 
 - Full verification snapshot: `docs/verification-2026-03-03.md`
@@ -113,10 +121,10 @@ Sample Markdown report (`docs/examples/sample-session-report.md`) is included fo
 Excerpt:
 
 ```text
-14 pass
+18 pass
 0 fail
-37 expect() calls
-Ran 14 tests across 5 files.
+59 expect() calls
+Ran 18 tests across 7 files.
 ```
 
 ## Project layout
@@ -130,7 +138,7 @@ Ran 14 tests across 5 files.
 ## Notes
 
 - Default report directory: `.opencode/reports`
-- Report filenames include `sessionId` + timestamp
+- Report filenames include `sessionId` + timestamp (`.json`, `.ansi.txt`, optional `.html` and `.md`)
 - Unknown attribution is always preserved for safe accounting
 
 ## License

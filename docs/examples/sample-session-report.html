@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Token Trace Report Sample</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 24px;
+      background: #0d1117;
+      color: #e6edf3;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif;
+    }
+    .panel {
+      max-width: 1000px;
+      margin: 0 auto 16px;
+      padding: 16px;
+      border: 1px solid #30363d;
+      border-radius: 12px;
+      background: #161b22;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+    .card {
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 10px;
+      background: #0f141a;
+    }
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 0.82rem;
+      color: #8b949e;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .card p {
+      margin: 0;
+      font-size: 1.2rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .bar {
+      display: flex;
+      height: 24px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid #30363d;
+      background: #20252c;
+    }
+    .seg-good { background: linear-gradient(90deg, #238636, #2ea043); }
+    .seg-unknown {
+      background: repeating-linear-gradient(45deg, #d29922, #d29922 8px, #7d4e08 8px, #7d4e08 16px);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      border-top: 1px solid #30363d;
+      padding: 8px;
+      text-align: left;
+    }
+    td.num {
+      text-align: right;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    .unknown-row td {
+      border-left: 3px solid #d29922;
+    }
+  </style>
+</head>
+<body>
+  <section class="panel">
+    <h1>Token Trace Report</h1>
+    <p>Session: session-42</p>
+  </section>
+
+  <section class="panel cards">
+    <article class="card"><h3>Input</h3><p>231</p></article>
+    <article class="card"><h3>Output</h3><p>98</p></article>
+    <article class="card"><h3>Total</h3><p>377</p></article>
+    <article class="card"><h3>Events</h3><p>6</p></article>
+  </section>
+
+  <section class="panel">
+    <h2>Source Token Share</h2>
+    <div class="bar">
+      <div class="seg-good" style="width:50.1%"></div>
+      <div class="seg-good" style="width:34.2%"></div>
+      <div class="seg-unknown" style="width:15.6%"></div>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Sources</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Kind</th>
+          <th>Key</th>
+          <th>Confidence</th>
+          <th>Total</th>
+          <th>Share</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>skill</td>
+          <td>skill:issue-map</td>
+          <td>direct</td>
+          <td class="num">189</td>
+          <td class="num">50.1%</td>
+        </tr>
+        <tr>
+          <td>mcp_tool</td>
+          <td>mcp_tool:context7</td>
+          <td>direct</td>
+          <td class="num">129</td>
+          <td class="num">34.2%</td>
+        </tr>
+        <tr class="unknown-row">
+          <td>unknown</td>
+          <td>unknown:unknown</td>
+          <td>inferred</td>
+          <td class="num">59</td>
+          <td class="num">15.6%</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</body>
+</html>

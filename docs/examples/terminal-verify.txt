@@ -1,11 +1,19 @@
 $ bun run verify:docker
-$ docker compose run --rm verify
+$ docker compose run --rm --build verify
 $ eslint .
 $ tsc -p tsconfig.json --noEmit
 bun test v1.3.10 (30e609e0)
 
+test/ansi-renderer.test.ts:
+(pass) renderAnsiReport > renders sections and unknown callout without ANSI colors when disabled
+(pass) renderAnsiReport > renders attributed summary when unknown is absent
+
+test/html-renderer.test.ts:
+(pass) renderHtmlReport > renders an HTML document with table and unknown details
+(pass) renderHtmlReport > supports theme and title overrides
+
 test/report-exporter.test.ts:
-(pass) exportSessionReport > writes JSON and markdown files
+(pass) exportSessionReport > writes JSON, ANSI, HTML, and markdown files
 (pass) exportSessionReport > creates the output directory when it does not exist
 
 test/source-attribution.test.ts:
@@ -28,9 +36,9 @@ test/trace-engine.test.ts:
 (pass) TraceEngine > aggregates usage by session and source
 (pass) TraceEngine > tracks unknown attribution safely
 
- 14 pass
+ 18 pass
  0 fail
- 37 expect() calls
-Ran 14 tests across 5 files.
+ 59 expect() calls
+Ran 18 tests across 7 files.
 
 $ tsc -p tsconfig.json

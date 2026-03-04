@@ -1,0 +1,39 @@
+Token Trace Report | session-42
+--------------------------------------------------------------------------------------
+Started:  2026-03-03T20:00:00.000Z
+Updated:  2026-03-03T20:00:06.000Z
+Exported: 2026-03-03T20:00:10.000Z
+
+Totals
+--------------------------------------------------------------------------------------
+Input        231   Output         98   Events      6
+CacheR        40   CacheW          8   Total     377
+
+Sources By Token Share
+--------------------------------------------------------------------------------------
+███████████░░░░░░░░░░░░  skill:issue-map                         189   50.1%  direct
+████████░░░░░░░░░░░░░░░  mcp_tool:context7                       129   34.2%  direct
+████░░░░░░░░░░░░░░░░░░░  ⚠ unknown:unknown                        59   15.6%  inferred
+
+Token Composition
+--------------------------------------------------------------------------------------
+Legend: █ input  ▓ output  ▒ cache
+skill:issue-map             ███████████▓▓▓▓▒
+mcp_tool:context7           ███████▓▓▓▓▒▒
+unknown:unknown             █████▓▓▒
+
+Attribution Confidence
+--------------------------------------------------------------------------------------
+direct     2 source(s)       318 tokens   84.4%
+inferred   1 source(s)        59 tokens   15.6%
+
+⚠ Unknown Sources
+--------------------------------------------------------------------------------------
+1 source(s), 59 tokens, 15.6% of total
+- unknown:unknown
+  · unknown:event:custom.random.event
+  · unknown:insufficient-source-evidence
+
+Notes
+--------------------------------------------------------------------------------------
+- unknown attribution retained for conservative accounting
