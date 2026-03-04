@@ -1,48 +1,57 @@
-# Verification Report - 2026-03-03
+# Verification Snapshot (2026-03-03)
 
-This document verifies the initial setup and adherence to project guidelines as of March 3rd, 2026.
+This captures command output after implementing tracing, attribution, exporter, plugin adapter,
+tests, and Docker test workflows.
 
-## Repository Structure
+## Local Verification
 
-- `docs/PROMPT.md`: Exists and contains initial project prompt.
-- `docs/verification-2026-03-03.md`: This file.
-- `src/`: Directory exists, currently empty as expected during bootstrap.
-- `test/`: Directory exists, currently empty as expected during bootstrap.
-- `AGENTS.md`: Exists and contains agent operating guidelines.
-- `.gitignore`: Exists and includes `node_modules/` and `dist/`.
-- `package.json`: Exists with correct scripts and dependencies.
-- `tsconfig.json`: Exists with strict TypeScript configuration.
-- `eslint.config.js`: Exists with ESLint configuration.
+```text
+$ bun run lint
+$ eslint .
 
-## Tooling and Runtime
+$ bun run typecheck
+$ tsc -p tsconfig.json --noEmit
 
-- **Bun**: Specified as preferred runtime/package manager.
-- **Node compatibility**: Standard Node LTS behavior supported.
-- **TypeScript**: Strict mode enabled in `tsconfig.json`.
-- **ESM**: Module system set to `"type": "module"` in `package.json`.
+$ bun test
+bun test v1.3.9 (cf6cdbbb)
 
-## Build, Lint, Test Commands
+ 14 pass
+ 0 fail
+ 37 expect() calls
+Ran 14 tests across 5 files. [123.00ms]
 
-All specified scripts are present in `package.json`:
+$ bun run build
+$ tsc -p tsconfig.json
+```
 
-- `bun install` (implied by `bun.lockb` and `package.json`)
-- `bun run build`
-- `bun run lint`
-- `bun run typecheck`
-- `bun test`
+## Dockerized Tests
 
-## Code Style Guidelines (Initial Check)
+```text
+$ docker compose run --rm tests
+...
+bun test v1.3.10 (30e609e0)
 
-- **Imports**: ESM imports/exports will be used.
-- **Formatting**: Prettier defaults with 100-char line width will be enforced via `eslint-config-prettier`.
-- **Types**: Strict TypeScript options enabled.
-- **Naming**: Conventions documented in `AGENTS.md`.
+ 14 pass
+ 0 fail
+ 37 expect() calls
+Ran 14 tests across 5 files. [24.00ms]
+```
 
-## OpenCode Integration
+## Dockerized Full Verify
 
-- Target hooks identified in `AGENTS.md`.
+```text
+$ docker compose run --rm verify
+$ eslint .
+$ tsc -p tsconfig.json --noEmit
+...
+ 14 pass
+ 0 fail
+$ tsc -p tsconfig.json
+```
 
-## Conclusion
+## Notes
 
-The initial repository setup aligns with the project guidelines outlined in `AGENTS.md`. The foundational configuration for development, linting, and testing is in place. The next steps will involve implementing the core logic within the `src/` directory and corresponding unit tests in `test/`.
-
+- Docker configuration now provides two services in `docker-compose.yml`:
+  - `tests`: run `bun test`
+  - `verify`: run lint + typecheck + test + build
+- Build context is reduced via `.dockerignore`.

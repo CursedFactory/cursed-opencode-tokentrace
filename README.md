@@ -60,6 +60,18 @@ bun run typecheck
 bun test
 ```
 
+### Docker test workflow
+
+```bash
+bun run test:docker
+```
+
+Run full lint/typecheck/test/build in Docker:
+
+```bash
+bun run verify:docker
+```
+
 ## Contributing
 
 Contributions are welcome! Please refer to `AGENTS.md` for detailed guidelines on code style, commit conventions, and testing.
@@ -67,4 +79,3 @@ Contributions are welcome! Please refer to `AGENTS.md` for detailed guidelines o
 ## License
 
 This project is licensed under the MIT License.
-
