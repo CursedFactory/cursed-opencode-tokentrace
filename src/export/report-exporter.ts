@@ -54,12 +54,13 @@ export function buildReportBaseName(sessionId: string, exportedAt: string): stri
 }
 
 export function renderMarkdownReport(report: SessionReport): string {
+  const fallbackSourceLine = "| unknown | unknown:unknown | inferred | 0 | 0 |";
   const sourceLines = report.sources.length
     ? report.sources.map(
         (source) =>
           `| ${source.kind} | ${source.key} | ${source.confidence} | ${source.events} | ${source.totals.totalTokens} |`,
       )
-    : ["| unknown | unknown:unknown | inferred | 0 | 0 |"];
+    : [fallbackSourceLine];
 
   return [
     `# Token Trace Report: ${report.sessionId}`,
@@ -101,9 +102,9 @@ export async function exportSessionReport(
 ): Promise<ExportResult> {
   const outputDir = options.outputDir ?? DEFAULT_REPORT_DIRECTORY;
   const includeAnsi = options.includeAnsi ?? true;
-  const ansiColor = options.ansiColor ?? false;
   const includeHtml = options.includeHtml ?? false;
   const includeMarkdown = options.includeMarkdown ?? false;
+  const ansiColor = options.ansiColor ?? false;
   const exportedAt = options.exportedAt ?? report.exportedAt ?? new Date().toISOString();
   const reportToWrite: SessionReport = {
     ...report,

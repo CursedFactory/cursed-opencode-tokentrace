@@ -2,8 +2,7 @@ import { TraceEngine } from "../core/trace-engine";
 import { UNKNOWN_SESSION_ID } from "../core/types";
 import { exportSessionReport } from "../export/report-exporter";
 import type { SessionReport } from "../core/types";
-import type { ExportSessionReportOptions } from "../export/report-exporter";
-import type { ExportResult } from "../export/report-exporter";
+import type { ExportResult, ExportSessionReportOptions } from "../export/report-exporter";
 
 export interface TokenTracePluginOptions {
   outputDir?: string;
@@ -63,12 +62,12 @@ function readPathValue(value: unknown, path: Path): unknown {
 
 function readSessionId(payload: unknown): string {
   for (const path of SESSION_ID_PATHS) {
-    const nestedValue = readPathValue(payload, path);
-    if (typeof nestedValue !== "string" || nestedValue.trim().length === 0) {
+    const sessionId = readPathValue(payload, path);
+    if (typeof sessionId !== "string" || sessionId.trim().length === 0) {
       continue;
     }
 
-    return nestedValue.trim();
+    return sessionId.trim();
   }
 
   return UNKNOWN_SESSION_ID;
@@ -102,14 +101,7 @@ export function createTokenTracePlugin(options: TokenTracePluginOptions = {}): T
     return sessionId;
   };
 
-  const exportBySessionId = async (sessionId: string): Promise<ExportResult | null> => {
-    const session = sessionMap.get(sessionId);
-    if (!session) {
-      return null;
-    }
-
-    const exportedAt = now().toISOString();
-    const report = session.snapshot(exportedAt);
+  const buildExportOptions = (exportedAt: string): ExportSessionReportOptions => {
     const exportOptions: ExportSessionReportOptions = {
       exportedAt,
     };
@@ -134,7 +126,18 @@ export function createTokenTracePlugin(options: TokenTracePluginOptions = {}): T
       exportOptions.includeHtml = options.includeHtml;
     }
 
-    return exportSessionReport(report, exportOptions);
+    return exportOptions;
+  };
+
+  const exportBySessionId = async (sessionId: string): Promise<ExportResult | null> => {
+    const session = sessionMap.get(sessionId);
+    if (!session) {
+      return null;
+    }
+
+    const exportedAt = now().toISOString();
+    const report = session.snapshot(exportedAt);
+    return exportSessionReport(report, buildExportOptions(exportedAt));
   };
 
   const hooks: Record<string, HookHandler> = {};

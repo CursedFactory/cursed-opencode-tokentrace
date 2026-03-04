@@ -74,9 +74,10 @@ export function renderAnsiReport(report: SessionReport, options: AnsiRenderOptio
   const barWidth = options.barWidth ?? 22;
   const colorEnabled = options.colorEnabled ?? true;
   const maxSources = options.maxSources ?? 12;
+  const sortedSources = sortSourcesByTotal(report.sources);
   const segments = computeSourceSegments(report).slice(0, maxSources);
-  const sortedSources = sortSourcesByTotal(report.sources).slice(0, maxSources);
-  const unknownSources = sortSourcesByTotal(report.sources).filter((source) => source.kind === "unknown");
+  const topSources = sortedSources.slice(0, maxSources);
+  const unknownSources = sortedSources.filter((source) => source.kind === "unknown");
   const confidenceBuckets = computeConfidenceBuckets(report);
   const title = `Token Trace Report | ${report.sessionId}`;
   const divider = "-".repeat(86);
@@ -128,7 +129,7 @@ export function renderAnsiReport(report: SessionReport, options: AnsiRenderOptio
   lines.push(colorize(divider, [ANSI.gray], colorEnabled));
   lines.push(colorize("Legend: █ input  ▓ output  ▒ cache", [ANSI.dim], colorEnabled));
 
-  for (const source of sortedSources.slice(0, 6)) {
+  for (const source of topSources.slice(0, 6)) {
     const cacheTotal = source.totals.cacheReadTokens + source.totals.cacheWriteTokens;
     const composition = buildCompositionBar(
       source.totals.inputTokens,

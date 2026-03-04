@@ -53,22 +53,22 @@ function buildReportWithUnknown(): SessionReport {
 
 describe("renderHtmlReport", () => {
   test("renders an HTML document with table and unknown details", () => {
-    const html = renderHtmlReport(buildReportWithUnknown());
+    const htmlReport = renderHtmlReport(buildReportWithUnknown());
 
-    expect(html.includes("<!DOCTYPE html>")).toBe(true);
-    expect(html.includes('id="source-table"')).toBe(true);
-    expect(html.includes('class="unknown-row"')).toBe(true);
-    expect(html.includes("Unknown Sources (1)")).toBe(true);
-    expect(html.includes('id="unknown-detail"')).toBe(true);
+    expect(htmlReport.includes("<!DOCTYPE html>")).toBe(true);
+    expect(htmlReport.includes('id="source-table"')).toBe(true);
+    expect(htmlReport.includes('class="unknown-row"')).toBe(true);
+    expect(htmlReport.includes("Unknown Sources (1)")).toBe(true);
+    expect(htmlReport.includes('id="unknown-detail"')).toBe(true);
   });
 
   test("supports theme and title overrides", () => {
-    const html = renderHtmlReport(buildReportWithUnknown(), {
+    const htmlReport = renderHtmlReport(buildReportWithUnknown(), {
       title: "Custom Title",
       darkMode: "light",
     });
 
-    expect(html.includes("Custom Title")).toBe(true);
-    expect(html.includes("theme-light")).toBe(true);
+    expect(htmlReport.includes("Custom Title")).toBe(true);
+    expect(htmlReport.includes("theme-light")).toBe(true);
   });
 });

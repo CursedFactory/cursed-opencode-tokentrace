@@ -66,9 +66,15 @@ describe("renderAnsiReport", () => {
   });
 
   test("renders attributed summary when unknown is absent", () => {
-    const input = buildReportWithUnknown();
-    input.sources = [input.sources[0] as SessionReport["sources"][number]];
-    input.totals.totalTokens = 122;
+    const baseReport = buildReportWithUnknown();
+    const input: SessionReport = {
+      ...baseReport,
+      totals: {
+        ...baseReport.totals,
+        totalTokens: 122,
+      },
+      sources: [baseReport.sources[0] as SessionReport["sources"][number]],
+    };
 
     const report = renderAnsiReport(input, {
       colorEnabled: false,

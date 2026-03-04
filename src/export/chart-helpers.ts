@@ -1,5 +1,7 @@
 import type { AttributionConfidence, SessionReport, SourceKind, SourceReport } from "../core/types";
 
+const INTEGER_FORMATTER = new Intl.NumberFormat("en-US");
+
 export interface BarSegment {
   key: string;
   kind: SourceKind;
@@ -17,7 +19,7 @@ export interface ConfidenceBucket {
 }
 
 export function formatInteger(value: number): string {
-  return new Intl.NumberFormat("en-US").format(Math.max(0, Math.trunc(value)));
+  return INTEGER_FORMATTER.format(Math.max(0, Math.trunc(value)));
 }
 
 export function formatPercent(value: number): string {
@@ -84,7 +86,7 @@ export function buildTextBar(
   emptyChar = "░",
 ): string {
   const safeWidth = Math.max(1, Math.trunc(width));
-  const safeShare = Math.min(1, Math.max(0, share));
+  const safeShare = Math.max(0, Math.min(1, share));
   const filledWidth = Math.round(safeShare * safeWidth);
 
   return `${filledChar.repeat(filledWidth)}${emptyChar.repeat(Math.max(0, safeWidth - filledWidth))}`;

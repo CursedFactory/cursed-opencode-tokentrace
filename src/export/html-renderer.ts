@@ -34,6 +34,7 @@ function renderSourceTableRows(sources: SourceReport[], totalTokens: number): st
   return sources
     .map((source) => {
       const share = totalTokens > 0 ? source.totals.totalTokens / totalTokens : 0;
+      const cacheTokens = source.totals.cacheReadTokens + source.totals.cacheWriteTokens;
       const rowClass = source.kind === "unknown" ? "unknown-row" : "";
 
       return [
@@ -44,7 +45,7 @@ function renderSourceTableRows(sources: SourceReport[], totalTokens: number): st
         `  <td data-sort-value="${source.events}" class="num">${escapeHtml(formatInteger(source.events))}</td>`,
         `  <td data-sort-value="${source.totals.inputTokens}" class="num">${escapeHtml(formatInteger(source.totals.inputTokens))}</td>`,
         `  <td data-sort-value="${source.totals.outputTokens}" class="num">${escapeHtml(formatInteger(source.totals.outputTokens))}</td>`,
-        `  <td data-sort-value="${source.totals.cacheReadTokens + source.totals.cacheWriteTokens}" class="num">${escapeHtml(formatInteger(source.totals.cacheReadTokens + source.totals.cacheWriteTokens))}</td>`,
+        `  <td data-sort-value="${cacheTokens}" class="num">${escapeHtml(formatInteger(cacheTokens))}</td>`,
         `  <td data-sort-value="${source.totals.totalTokens}" class="num">${escapeHtml(formatInteger(source.totals.totalTokens))}</td>`,
         `  <td data-sort-value="${share}" class="num">${escapeHtml(formatPercent(share))}</td>`,
         "</tr>",
@@ -99,8 +100,9 @@ function renderSourceShareBar(report: SessionReport): string {
     .map((segment) => {
       const width = Math.max(0, Math.min(100, segment.share * 100));
       const className = segment.isUnknown ? "segment unknown" : "segment known";
+      const title = `${segment.key} · ${formatInteger(segment.value)} tokens · ${formatPercent(segment.share)}`;
 
-      return `<div class="${className}" style="width:${width.toFixed(2)}%" title="${escapeHtml(`${segment.key} · ${formatInteger(segment.value)} tokens · ${formatPercent(segment.share)}`)}"></div>`;
+      return `<div class="${className}" style="width:${width.toFixed(2)}%" title="${escapeHtml(title)}"></div>`;
     })
     .join("");
 
@@ -128,6 +130,10 @@ export function renderHtmlReport(report: SessionReport, options: HtmlRenderOptio
   const inferredBucket = confidenceBuckets.find((bucket) => bucket.confidence === "inferred");
   const directWidth = `${((directBucket?.share ?? 0) * 100).toFixed(2)}%`;
   const inferredWidth = `${((inferredBucket?.share ?? 0) * 100).toFixed(2)}%`;
+  const notesMarkup =
+    report.notes.length > 0
+      ? `      <ul>${report.notes.map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>`
+      : '      <p class="legend">none</p>';
 
   return [
     "<!DOCTYPE html>",
@@ -312,9 +318,7 @@ export function renderHtmlReport(report: SessionReport, options: HtmlRenderOptio
     "    </section>",
     '    <section id="notes">',
     "      <h2>Notes</h2>",
-    report.notes.length > 0
-      ? `      <ul>${report.notes.map((note) => `<li>${escapeHtml(note)}</li>`).join("")}</ul>`
-      : "      <p class=\"legend\">none</p>",
+    notesMarkup,
     "    </section>",
     "    <footer>",
     `      Generated from session ${escapeHtml(report.sessionId)} at ${escapeHtml(report.exportedAt ?? "n/a")}`,
